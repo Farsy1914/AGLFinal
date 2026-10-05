@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import Order from '@/models/orders';
 
+// Next.js Route Context Type Definition
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-// GET Single Order
+// 1. GET Single Order
 export async function GET(
   req: NextRequest,
   context: RouteContext
@@ -32,7 +33,7 @@ export async function GET(
   }
 }
 
-// PATCH Update Order Status or Data
+// 2. PATCH Update Order
 export async function PATCH(
   req: NextRequest,
   context: RouteContext
@@ -63,7 +64,7 @@ export async function PATCH(
   }
 }
 
-// DELETE Order
+// 3. DELETE Order
 export async function DELETE(
   req: NextRequest,
   context: RouteContext
