@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import mongoose, { Schema, model, models } from 'mongoose';
-import { connectToDatabase } from '../../../../../lib/mongodb';
+import { NextRequest, NextResponse } from 'next/server';
+import { Schema, model, models } from 'mongoose';
+import { connectToDatabase } from '@/lib/mongodb';
 
 const InvestmentSchema = new Schema({}, { strict: false });
 const Investment = models.Investment || model('Investment', InvestmentSchema);
@@ -8,19 +8,30 @@ const Investment = models.Investment || model('Investment', InvestmentSchema);
 const RegionalDataSchema = new Schema({}, { strict: false });
 const RegionalData = models.RegionalData || model('RegionalData', RegionalDataSchema);
 
+// Next.js Route Context Type Definition (Promise based)
+type RouteContext = {
+  params: Promise<{ id: string }>;
+};
+
 export async function POST(
-  req: Request,
-  context: { params: { id: string } }
+  req: NextRequest,
+  context: RouteContext
 ) {
   try {
     await connectToDatabase();
-    const params = await context.params;
-    const { id } = params;
+    
+    // Await context.params properly
+    const { id } = await context.params;
     const { analystNotes } = await req.json();
 
     // Fetch investment proposal
     const proposal = await Investment.findById(id);
-    if (!proposal) return NextResponse.json({ success: false, error: 'Proposal not found' }, { status: 404 });
+    if (!proposal) {
+      return NextResponse.json(
+        { success: false, error: 'Proposal not found' },
+        { status: 404 }
+      );
+    }
 
     // Fetch historical data for this region and crop
     const regData = await RegionalData.findOne({
@@ -29,7 +40,10 @@ export async function POST(
     });
 
     if (!regData) {
-      return NextResponse.json({ success: false, error: 'No regional yield data found for this region/crop' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: 'No regional yield data found for this region/crop' },
+        { status: 400 }
+      );
     }
 
     // Analyst ROI Calculation
@@ -53,6 +67,9 @@ export async function POST(
 
     return NextResponse.json({ success: true, data: updatedProposal });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
   }
 }

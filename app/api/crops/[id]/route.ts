@@ -1,19 +1,23 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectToDatabase } from '@/lib/mongodb';
 import Crop from '@/models/crops';
 
+// Next.js Route Context Type Definition (Promise based for Next.js 15+)
+type RouteContext = {
+  params: Promise<{ id: string }>;
+};
+
 // DELETE: Remove a crop listing by ID
 export async function DELETE(
-  req: Request,
-  context: { params: { id: string } }
+  req: NextRequest,
+  context: RouteContext
 ) {
   try {
     await connectToDatabase();
     
-    // Await context.params for Next.js async route parameters
-    const params = await context.params;
-    const { id } = params;
+    // Await context.params properly
+    const { id } = await context.params;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
