@@ -46,6 +46,7 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
       { name: 'Profile & Financial KYC', href: '/investor/profile' },
     ],
     admin: [
+      { name: 'Admin Dashboard', href: '/admin/dashboard' },
       { name: 'User & KYC Management', href: '/admin/user-management' },
     ],
     analyst: [
@@ -110,12 +111,11 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
             Switch Portal
           </div>
           
-          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
             <Link
               href="/farmer"
               onClick={onClose}
               style={{
-                flex: 1,
                 padding: '6px 4px',
                 textAlign: 'center',
                 background: role === 'farmer' ? '#10b981' : 'rgba(255,255,255,0.08)',
@@ -133,7 +133,6 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
               href="/buyer/marketplace"
               onClick={onClose}
               style={{
-                flex: 1,
                 padding: '6px 4px',
                 textAlign: 'center',
                 background: role === 'buyer' ? '#0284c7' : 'rgba(255,255,255,0.08)',
@@ -151,7 +150,6 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
               href="/investor/dashboard"
               onClick={onClose}
               style={{
-                flex: 1,
                 padding: '6px 4px',
                 textAlign: 'center',
                 background: role === 'investor' ? '#7c3aed' : 'rgba(255,255,255,0.08)',
@@ -163,6 +161,23 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
               }}
             >
               💼 Investor
+            </Link>
+
+            <Link
+              href="/admin/dashboard"
+              onClick={onClose}
+              style={{
+                padding: '6px 4px',
+                textAlign: 'center',
+                background: role === 'admin' ? '#e11d48' : 'rgba(255,255,255,0.08)',
+                borderRadius: '6px',
+                color: '#fff',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              ⚙️ Admin
             </Link>
           </div>
 
